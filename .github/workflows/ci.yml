@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: 
+    - main
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+
+jobs:
+  linter:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          check-latest: true
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Run linter
+        run: npm run lint
+
+  test:
+    name: Node.js ${{ matrix.node }} - valkey ${{ matrix.valkey }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node:   ['20', '22']
+        valkey: ['7.2.9', 'latest']
+    services:
+      valkey:
+        image: valkey/valkey:${{ matrix.valkey }}
+        ports:
+          - '6379:6379'
+        options: '--entrypoint valkey-server'
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          check-latest: true
+
+      - name: Install dependencies
+        run: npm i --ignore-scripts
+
+      - name: Run tests
+        run: npm test
