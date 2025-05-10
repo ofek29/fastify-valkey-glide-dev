@@ -16,11 +16,11 @@ test.beforeEach(async () => {
   await fastify.close()
 })
 
-test('fastify.valkey should exist', async (t) => {
+test('Plugin should decorate instance as fastify.valkey', async (t) => {
   t.plan(1)
   const fastify = Fastify()
   fastify.register(fastifyValkey, {
-    addresses: [{ host: '127.0.0.1' }]
+    addresses: [{ host: '127.0.0.1', port: 6379 }]
   })
 
   await fastify.ready()
@@ -29,19 +29,19 @@ test('fastify.valkey should exist', async (t) => {
   await fastify.close()
 })
 
-test('fastify.valkey should be the valkey client', async (t) => {
+test('fastify.valkey should be functional valkey client', async (t) => {
   t.plan(1)
   const fastify = Fastify()
 
   fastify.register(fastifyValkey, {
-    addresses: [{ host: '127.0.0.1' }]
+    addresses: [{ host: '127.0.0.1', port: 6379 }]
   })
 
   await fastify.ready()
 
-  await fastify.valkey.set('key', 'value')
-  const val = await fastify.valkey.get('key')
-  t.assert.deepStrictEqual(val, 'value')
+  await fastify.valkey.set('functional client key', 'functional client value')
+  const val = await fastify.valkey.get('functional client key')
+  t.assert.deepStrictEqual(val, 'functional client value')
 
   await fastify.close()
 })
@@ -51,7 +51,7 @@ test('fastify.valkey.test namespace should exist', async (t) => {
 
   const fastify = Fastify()
   fastify.register(fastifyValkey, {
-    addresses: [{ host: '127.0.0.1' }],
+    addresses: [{ host: '127.0.0.1', port: 6379 }],
     namespace: 'test'
   })
 
@@ -63,20 +63,20 @@ test('fastify.valkey.test namespace should exist', async (t) => {
   await fastify.close()
 })
 
-test('fastify.valkey.test should be the valkey client', async (t) => {
+test('fastify.valkey.test should be functional valkey client', async (t) => {
   t.plan(1)
   const fastify = Fastify()
 
   fastify.register(fastifyValkey, {
-    addresses: [{ host: '127.0.0.1' }],
+    addresses: [{ host: '127.0.0.1', port: 6379 }],
     namespace: 'test'
   })
 
   await fastify.ready()
 
-  await fastify.valkey.test.set('key_namespace', 'value_namespace')
-  const val = await fastify.valkey.test.get('key_namespace')
-  t.assert.deepStrictEqual(val, 'value_namespace')
+  await fastify.valkey.test.set('functional client namespace key', 'functional client namespace value')
+  const val = await fastify.valkey.test.get('functional client namespace key')
+  t.assert.deepStrictEqual(val, 'functional client namespace value')
 
   await fastify.close()
 })
@@ -86,27 +86,27 @@ test('Promises support', async (t) => {
   const fastify = Fastify()
 
   fastify.register(fastifyValkey, {
-    addresses: [{ host: '127.0.0.1' }]
+    addresses: [{ host: '127.0.0.1', port: 6379 }]
   })
 
   await fastify.ready()
 
-  await fastify.valkey.set('key', 'value')
-  const val = await fastify.valkey.get('key')
-  t.assert.deepStrictEqual(val, 'value')
+  await fastify.valkey.set('test promises key', 'test promises value')
+  const val = await fastify.valkey.get('test promises key')
+  t.assert.deepStrictEqual(val, 'test promises value')
 
   await fastify.close()
 })
 
-test('Custom valkey client that is already connected', async (t) => {
-  t.plan(3)
+test('Should accept custom valkey client that is already connected', async (t) => {
+  t.plan(4)
   const fastify = Fastify()
   const { GlideClient } = require('@valkey/valkey-glide')
-  const valkey = await GlideClient.createClient({ addresses: [{ host: '127.0.0.1' }] })
+  const valkey = await GlideClient.createClient({ addresses: [{ host: '127.0.0.1', port: 6379 }] })
 
-  await valkey.set('key', 'value')
-  const val = await valkey.get('key')
-  t.assert.deepStrictEqual(val, 'value')
+  await valkey.set('custom client key1', 'custom client value1')
+  const val = await valkey.get('custom client key1')
+  t.assert.deepStrictEqual(val, 'custom client value1')
 
   fastify.register(fastifyValkey, {
     client: valkey,
@@ -116,23 +116,27 @@ test('Custom valkey client that is already connected', async (t) => {
 
   t.assert.deepStrictEqual(fastify.valkey, valkey)
 
-  await fastify.valkey.set('key2', 'value2')
-  const val2 = await fastify.valkey.get('key2')
-  t.assert.deepStrictEqual(val2, 'value2')
+  await fastify.valkey.set('custom client key2', 'custom client value2')
+  const val2 = await fastify.valkey.get('custom client key2')
+  t.assert.deepStrictEqual(val2, 'custom client value2')
 
-  fastify.valkey.close()
+  await valkey.set('custom client key3', 'custom client value3')
+  const val3 = await fastify.valkey.get('custom client key3')
+  t.assert.deepStrictEqual(val3, 'custom client value3')
+
   await fastify.close()
+  fastify.valkey.close()
 })
 
-test('If closeClient is enabled, close the client.', async (t) => {
-  t.plan(4)
+test('Client should be close if closeClient is enabled', async (t) => {
+  t.plan(5)
   const fastify = Fastify()
   const { GlideClient } = require('@valkey/valkey-glide')
-  const valkey = await GlideClient.createClient({ addresses: [{ host: 'localhost', port: 6379 }] })
+  const valkey = await GlideClient.createClient({ addresses: [{ host: '127.0.0.1', port: 6379 }] })
 
-  await valkey.set('key', 'value')
-  const val = await valkey.get('key')
-  t.assert.deepStrictEqual(val, 'value')
+  await valkey.set('closeClient enabled key1', 'closeClient enabled value1')
+  const val = await valkey.get('closeClient enabled key1')
+  t.assert.deepStrictEqual(val, 'closeClient enabled value1')
 
   fastify.register(fastifyValkey, {
     client: valkey,
@@ -143,9 +147,9 @@ test('If closeClient is enabled, close the client.', async (t) => {
 
   t.assert.deepStrictEqual(fastify.valkey, valkey)
 
-  await fastify.valkey.set('key2', 'value2')
-  const val2 = await fastify.valkey.get('key2')
-  t.assert.deepStrictEqual(val2, 'value2')
+  await fastify.valkey.set('closeClient enabled key2', 'closeClient enabled value2')
+  const val2 = await fastify.valkey.get('closeClient enabled key2')
+  t.assert.deepStrictEqual(val2, 'closeClient enabled value2')
 
   const originalClose = fastify.valkey.close
   fastify.valkey.close = (callback) => {
@@ -154,56 +158,68 @@ test('If closeClient is enabled, close the client.', async (t) => {
   }
 
   await fastify.close()
+  try {
+    await valkey.get('closeClient enabled key1')
+    t.fail('Client should not work after being closed')
+  } catch (err) {
+    t.assert.ok('Should throw error when using closed client')
+  }
 })
 
-test('If closeClient is enabled, close the client namespace.', async (t) => {
-  t.plan(4)
+test('Client should be close if closeClient is enabled, namespace', async (t) => {
+  t.plan(5)
   const fastify = Fastify()
   const { GlideClient } = require('@valkey/valkey-glide')
-  const valkey = await GlideClient.createClient({ addresses: [{ host: 'localhost', port: 6379 }] })
+  const valkey = await GlideClient.createClient({ addresses: [{ host: '127.0.0.1', port: 6379 }] })
 
-  await valkey.set('key', 'value')
-  const val = await valkey.get('key')
-  t.assert.deepStrictEqual(val, 'value')
+  await valkey.set('closeClient enabled namespace key1', 'closeClient enabled namespace value1')
+  const val = await valkey.get('closeClient enabled namespace key1')
+  t.assert.deepStrictEqual(val, 'closeClient enabled namespace value1')
 
   fastify.register(fastifyValkey, {
     client: valkey,
-    namespace: 'foo',
+    namespace: 'close_client_enabled',
     closeClient: true
   })
 
   await fastify.ready()
 
-  t.assert.deepStrictEqual(fastify.valkey.foo, valkey)
+  t.assert.deepStrictEqual(fastify.valkey.close_client_enabled, valkey)
 
-  await fastify.valkey.foo.set('key2', 'value2')
-  const val2 = await fastify.valkey.foo.get('key2')
-  t.assert.deepStrictEqual(val2, 'value2')
+  await fastify.valkey.close_client_enabled.set('closeClient enabled namespace key2', 'closeClient enabled namespace value2')
+  const val2 = await fastify.valkey.close_client_enabled.get('closeClient enabled namespace key2')
+  t.assert.deepStrictEqual(val2, 'closeClient enabled namespace value2')
 
-  const originalClose = fastify.valkey.foo.close
-  fastify.valkey.foo.close = (callback) => {
+  const originalClose = fastify.valkey.close_client_enabled.close
+  fastify.valkey.close_client_enabled.close = (callback) => {
     t.assert.ok('valkey client closed')
-    originalClose.call(fastify.valkey.foo, callback)
+    originalClose.call(fastify.valkey.close_client_enabled, callback)
   }
 
   await fastify.close()
+  try {
+    await valkey.close_client_enabled.get('closeClient enabled namespace key1')
+    t.fail('Client should not work after being closed')
+  } catch (err) {
+    t.assert.ok('Should throw error when using closed client')
+  }
 })
 
-test('fastify.valkey.test should throw with duplicate connection namespaces', async (t) => {
+test('Should throw when using duplicate connection namespaces', async (t) => {
   t.plan(1)
 
-  const namespace = 'test'
+  const namespace = 'duplicate_namespace'
 
   const fastify = Fastify()
   t.after(() => fastify.close())
 
   fastify
     .register(fastifyValkey, {
-      addresses: [{ host: '127.0.0.1' }],
+      addresses: [{ host: '127.0.0.1', port: 6379 }],
       namespace
     })
     .register(fastifyValkey, {
-      addresses: [{ host: '127.0.0.1' }],
+      addresses: [{ host: '127.0.0.1', port: 6379 }],
       namespace
     })
 
@@ -218,16 +234,16 @@ test('Should throw when trying to register multiple instances without giving a n
 
   fastify
     .register(fastifyValkey, {
-      addresses: [{ host: '127.0.0.1' }],
+      addresses: [{ host: '127.0.0.1', port: 6379 }],
     })
     .register(fastifyValkey, {
-      addresses: [{ host: '127.0.0.1' }],
+      addresses: [{ host: '127.0.0.1', port: 6379 }],
     })
 
   await t.assert.rejects(fastify.ready(), new Error('@fastify/valkey has already been registered'))
 })
 
-test('Should not throw within different contexts', async (t) => {
+test('Should not throw within different contexts with same namespace', async (t) => {
   t.plan(1)
 
   const fastify = Fastify()
@@ -235,7 +251,8 @@ test('Should not throw within different contexts', async (t) => {
 
   fastify.register(function (instance, _options, next) {
     instance.register(fastifyValkey, {
-      addresses: [{ host: '127.0.0.1' }]
+      addresses: [{ host: '127.0.0.1', port: 6379 }],
+      namespace: 'same namespace'
     })
     next()
   })
@@ -243,12 +260,12 @@ test('Should not throw within different contexts', async (t) => {
   fastify.register(function (instance, _options, next) {
     instance
       .register(fastifyValkey, {
-        addresses: [{ host: '127.0.0.1' }],
-        namespace: 'test1'
+        addresses: [{ host: '127.0.0.1', port: 6379 }],
+        namespace: 'same namespace'
       })
       .register(fastifyValkey, {
-        addresses: [{ host: '127.0.0.1' }],
-        namespace: 'test2'
+        addresses: [{ host: '127.0.0.1', port: 6379 }],
+        namespace: 'same namespace2'
       })
     next()
   })
@@ -280,19 +297,19 @@ test('Should be able to register multiple namespaced @fastify/valkey instances',
   t.after(() => fastify.close())
 
   await fastify.register(fastifyValkey, {
-    addresses: [{ host: '127.0.0.1' }],
-    namespace: 'one'
+    addresses: [{ host: '127.0.0.1', port: 6379 }],
+    namespace: 'multiple_namespace1'
   })
 
   await fastify.register(fastifyValkey, {
-    addresses: [{ host: '127.0.0.1' }],
-    namespace: 'two'
+    addresses: [{ host: '127.0.0.1', port: 6379 }],
+    namespace: 'multiple_namespace2'
   })
 
   await fastify.ready()
   t.assert.ok(fastify.valkey)
-  t.assert.ok(fastify.valkey.one)
-  t.assert.ok(fastify.valkey.two)
+  t.assert.ok(fastify.valkey.multiple_namespace1)
+  t.assert.ok(fastify.valkey.multiple_namespace2)
 })
 
 test('Should throw when @fastify/valkey is initialized with an option that makes valkey throw', async (t) => {
