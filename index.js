@@ -26,7 +26,7 @@ async function fastifyValkey (fastify, options) {
       throw new Error('@fastify/valkey has already been registered')
     }
 
-    const close = async (fastify) => { fastify.valkey.close() }
+    const close = (fastify) => { fastify.valkey.close() }
 
     client = await setupClient(fastify, client, closeClient, valkeyOptions, close)
 
