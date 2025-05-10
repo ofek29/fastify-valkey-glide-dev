@@ -35,12 +35,13 @@ jobs:
         run: npm run lint
 
   test:
-    name: Node.js ${{ matrix.node }} - valkey ${{ matrix.valkey }}
+    name: Node.js ${{ matrix.node }} - Valkey ${{ matrix.valkey }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node:   ['20', '22']
-        valkey: ['7.2.9', 'latest']
+        node: ['20', 'lts/*', 'current']
+        valkey: ['7.2', 'latest']
+
     services:
       valkey:
         image: valkey/valkey:${{ matrix.valkey }}
