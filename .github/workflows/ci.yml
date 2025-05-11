@@ -27,29 +27,36 @@ jobs:
         with:
           node-version: lts/*
           check-latest: true
+          cache: 'npm'
+
 
       - name: Install dependencies
-        run: npm i
+        run: npm install
 
       - name: Run linter
         run: npm run lint
 
   test:
-    name: Node.js ${{ matrix.node }} - Valkey ${{ matrix.valkey }}
-    runs-on: ubuntu-latest
+    name: OS ${{ matrix.os }} - Node.js ${{ matrix.node }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         node: ['20', 'lts/*', 'current']
-        valkey: ['7.2', 'latest']
-
-    services:
-      valkey:
-        image: valkey/valkey:${{ matrix.valkey }}
-        ports:
-          - '6379:6379'
-        options: '--entrypoint valkey-server'
+        os: [ubuntu-latest, macos-latest]
 
     steps:
+      - name: Setup Valkey (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          apt install valkey
+          valkey-server
+
+      - name: Setup Valkey (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install valkey
+          valkey-server
+
       - name: Check out repository
         uses: actions/checkout@v4
         with:
@@ -60,9 +67,10 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           check-latest: true
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm i --ignore-scripts
+        run: npm install --ignore-scripts
 
       - name: Run tests
         run: npm test
