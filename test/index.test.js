@@ -41,7 +41,7 @@ test('fastify.valkey should be functional valkey client', async (t) => {
 
   await fastify.valkey.set('functional client key', 'functional client value')
   const val = await fastify.valkey.get('functional client key')
-  t.assert.deepStrictEqual(val, 'functional client value')
+  t.assert.strictEqual(val, 'functional client value')
 
   await fastify.close()
 })
@@ -76,7 +76,7 @@ test('fastify.valkey.test should be functional valkey client', async (t) => {
 
   await fastify.valkey.test.set('functional client namespace key', 'functional client namespace value')
   const val = await fastify.valkey.test.get('functional client namespace key')
-  t.assert.deepStrictEqual(val, 'functional client namespace value')
+  t.assert.strictEqual(val, 'functional client namespace value')
 
   await fastify.close()
 })
@@ -93,7 +93,7 @@ test('Promises support', async (t) => {
 
   await fastify.valkey.set('test promises key', 'test promises value')
   const val = await fastify.valkey.get('test promises key')
-  t.assert.deepStrictEqual(val, 'test promises value')
+  t.assert.strictEqual(val, 'test promises value')
 
   await fastify.close()
 })
@@ -106,7 +106,7 @@ test('Should accept custom valkey client that is already connected', async (t) =
 
   await valkey.set('custom client key1', 'custom client value1')
   const val = await valkey.get('custom client key1')
-  t.assert.deepStrictEqual(val, 'custom client value1')
+  t.assert.strictEqual(val, 'custom client value1')
 
   fastify.register(fastifyValkey, {
     client: valkey,
@@ -118,11 +118,11 @@ test('Should accept custom valkey client that is already connected', async (t) =
 
   await fastify.valkey.set('custom client key2', 'custom client value2')
   const val2 = await fastify.valkey.get('custom client key2')
-  t.assert.deepStrictEqual(val2, 'custom client value2')
+  t.assert.strictEqual(val2, 'custom client value2')
 
   await valkey.set('custom client key3', 'custom client value3')
   const val3 = await fastify.valkey.get('custom client key3')
-  t.assert.deepStrictEqual(val3, 'custom client value3')
+  t.assert.strictEqual(val3, 'custom client value3')
 
   await fastify.close()
   fastify.valkey.close()
@@ -136,7 +136,7 @@ test('Client should be close if closeClient is enabled', async (t) => {
 
   await valkey.set('closeClient enabled key1', 'closeClient enabled value1')
   const val = await valkey.get('closeClient enabled key1')
-  t.assert.deepStrictEqual(val, 'closeClient enabled value1')
+  t.assert.strictEqual(val, 'closeClient enabled value1')
 
   fastify.register(fastifyValkey, {
     client: valkey,
@@ -149,7 +149,7 @@ test('Client should be close if closeClient is enabled', async (t) => {
 
   await fastify.valkey.set('closeClient enabled key2', 'closeClient enabled value2')
   const val2 = await fastify.valkey.get('closeClient enabled key2')
-  t.assert.deepStrictEqual(val2, 'closeClient enabled value2')
+  t.assert.strictEqual(val2, 'closeClient enabled value2')
 
   const originalClose = fastify.valkey.close
   fastify.valkey.close = (callback) => {
@@ -174,7 +174,7 @@ test('Client should be close if closeClient is enabled, namespace', async (t) =>
 
   await valkey.set('closeClient enabled namespace key1', 'closeClient enabled namespace value1')
   const val = await valkey.get('closeClient enabled namespace key1')
-  t.assert.deepStrictEqual(val, 'closeClient enabled namespace value1')
+  t.assert.strictEqual(val, 'closeClient enabled namespace value1')
 
   fastify.register(fastifyValkey, {
     client: valkey,
@@ -188,7 +188,7 @@ test('Client should be close if closeClient is enabled, namespace', async (t) =>
 
   await fastify.valkey.close_client_enabled.set('closeClient enabled namespace key2', 'closeClient enabled namespace value2')
   const val2 = await fastify.valkey.close_client_enabled.get('closeClient enabled namespace key2')
-  t.assert.deepStrictEqual(val2, 'closeClient enabled namespace value2')
+  t.assert.strictEqual(val2, 'closeClient enabled namespace value2')
 
   const originalClose = fastify.valkey.close_client_enabled.close
   fastify.valkey.close_client_enabled.close = (callback) => {
