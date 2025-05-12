@@ -1,4 +1,4 @@
-# @fastify/valkey-glide
+# @ofek.a/fastify-valkey-glide
 
 Fastify Valkey connection plugin, with this you can share the same Valkey connection in every part of your server.
 
@@ -22,7 +22,7 @@ The ``options`` that you pass to `register` will be passed to the Valkey client.
 
 ```js
 import Fastify from 'fastify'
-import fastifyValkey from '@fastify/valkey-glide'
+import fastifyValkey from '@ofek.a/fastify-valkey-glide'
 
 const fastify = Fastify()
 
@@ -47,7 +47,7 @@ The client is automatically closed when the fastify instance is closed.
 
 ```js
 import Fastify from 'fastify'
-import fastifyValkey from '@fastify/valkey-glide'
+import fastifyValkey from '@ofek.a/fastify-valkey-glide'
 
 const fastify = Fastify({ logger: true })
 
@@ -85,7 +85,7 @@ closed.
 
 ```js
 import Fastify from 'fastify'
-import fastifyValkey from '@fastify/valkey-glide'
+import fastifyValkey from '@ofek.a/fastify-valkey-glide'
 import { GlideClient } from '@valkey/valkey-glide'
 
 const fastify = Fastify()
@@ -101,7 +101,7 @@ You can also supply a *Valkey Cluster* instance to the client:
 
 ```js
 import Fastify from 'fastify'
-import fastifyValkey from '@fastify/valkey-glide'
+import fastifyValkey from '@ofek.a/fastify-valkey-glide'
 import { GlideClusterClient } from '@valkey/valkey-glide'
 
 const fastify = Fastify()
@@ -130,7 +130,7 @@ By using the `namespace` option you can register multiple Valkey client instance
 
 ```js
 import Fastify from 'fastify'
-import fastifyValkey from '@fastify/valkey-glide'
+import fastifyValkey from '@ofek.a/fastify-valkey-glide'
 import { GlideClient } from '@valkey/valkey-glide'
 
 const fastify = Fastify()
