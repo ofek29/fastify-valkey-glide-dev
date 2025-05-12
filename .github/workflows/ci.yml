@@ -43,19 +43,19 @@ jobs:
         node: ['20', 'lts/*', 'current']
         os: [ubuntu-latest, macos-latest]
 
-    services:
-      valkey:
-        image: valkey/valkey:latest
-        ports:
-          - 6379:6379        
-        options: '--entrypoint valkey-server'
-        
     steps:
+      - name: Setup Valkey (Linux)
+        if: contains(runner.os, 'Linux')
+        run: |
+          sudo apt update
+          sudo apt install valkey
+          sudo systemctl start valkey-server
+
       - name: Setup Valkey (macOS)
-        if: runner.os == 'macOS'
+        if: contains(runner.os, 'macOS')
         run: |
           brew install valkey
-          valkey-server
+          brew services start valkey
 
       - name: Check out repository
         uses: actions/checkout@v4
