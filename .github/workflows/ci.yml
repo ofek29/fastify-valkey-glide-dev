@@ -11,7 +11,10 @@ on:
     paths-ignore:
       - 'docs/**'
       - '*.md'
-
+      
+permissions:
+  contents: read
+  
 jobs:
   linter:
     name: Lint Code
