@@ -24,6 +24,10 @@
     "cache"
   ],
   "author": "Ofek Avrahami",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ofek29/fastify-valkey-glide.git"
+  },
   "license": "MIT",
   "devDependencies": {
     "@fastify/pre-commit": "^2.1.0",
