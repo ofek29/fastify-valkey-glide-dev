@@ -1,14 +1,10 @@
 {
   "name": "@ofek.a/fastify-valkey-glide",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Plugin to share a common valkey connection across Fastify.",
   "main": "index.js",
   "type": "commonjs",
   "types": "types/index.d.ts",
-  "files": [
-    "index.js",
-    "types/index.d.ts"
-  ],
   "scripts": {
     "lint": "eslint",
     "lint:fix": "eslint --fix",
