@@ -10,6 +10,14 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+
+    services:
+      valkey:
+        image: valkey/valkey:latest
+        ports:
+          - '6379:6379'
+        options: '--entrypoint valkey-server'
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -17,7 +25,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: current
+          check-latest: true
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
