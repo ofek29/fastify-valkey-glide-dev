@@ -1,0 +1,11 @@
+coverage
+
+glide-logs
+
+test/
+
+types/index.test-d.ts
+
+eslint.config.js
+
+package-lock.json
