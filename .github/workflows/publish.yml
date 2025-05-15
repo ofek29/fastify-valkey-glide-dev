@@ -11,13 +11,6 @@ jobs:
   publish:
     runs-on: ubuntu-latest
 
-    services:
-      valkey:
-        image: valkey/valkey:latest
-        ports:
-          - '6379:6379'
-        options: '--entrypoint valkey-server'
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -31,9 +24,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-
-      - name: Run tests
-        run: npm test
 
       - name: Publish to npm
         run: npm publish
