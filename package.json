@@ -30,7 +30,7 @@
   "author": "Ofek Avrahami",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ofek29/fastify-valkey-glide.git"
+    "url": "git+https://github.com/ofek29/fastify-valkey-glide-dev.git"
   },
   "license": "MIT",
   "devDependencies": {
