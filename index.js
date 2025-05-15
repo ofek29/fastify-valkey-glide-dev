@@ -49,7 +49,7 @@ async function setupClient (fastify, client, closeClient, valkeyOptions, closeIn
 
 module.exports = fp(fastifyValkey, {
   fastify: '5.x',
-  name: '@fastify/valkey'
+  name: '@ofek.a/fastify-valkey-glide'
 })
 module.exports.default = fastifyValkey
 module.exports.fastifyValkey = fastifyValkey
