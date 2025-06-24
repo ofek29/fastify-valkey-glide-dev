@@ -320,6 +320,7 @@ test('Should throw when @fastify/valkey is initialized with an option that makes
 
   fastify.register(fastifyValkey, {
     addresses: [],
+    requestTimeout: 500,
     connectionBackoff: {
       numberOfRetries: 0
     }
@@ -337,6 +338,7 @@ test('Should throw when @fastify/valkey is initialized with a namespace and an o
   fastify.register(fastifyValkey, {
     addresses: [],
     namespace: 'fail',
+    requestTimeout: 500,
     connectionBackoff: {
       numberOfRetries: 0
     }
