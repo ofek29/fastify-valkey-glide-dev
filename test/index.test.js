@@ -320,7 +320,7 @@ test('Should throw when @fastify/valkey is initialized with an option that makes
 
   fastify.register(fastifyValkey, {
     addresses: [],
-    requestTimeout: 1000
+    requestTimeout: 250
   })
 
   await t.assert.rejects(fastify.ready())
@@ -335,7 +335,7 @@ test('Should throw when @fastify/valkey is initialized with a namespace and an o
   fastify.register(fastifyValkey, {
     addresses: [],
     namespace: 'fail',
-    requestTimeout: 1000
+    requestTimeout: 250
   })
 
   await t.assert.rejects(fastify.ready())
