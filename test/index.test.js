@@ -318,7 +318,12 @@ test('Should throw when @fastify/valkey is initialized with an option that makes
   const fastify = Fastify({ pluginTimeout: 20000 })
   t.after(() => fastify.close())
 
-  fastify.register(fastifyValkey, { addresses: [] })
+  fastify.register(fastifyValkey, {
+    addresses: [],
+    connectionBackoff: {
+      numberOfRetries: 0
+    }
+  })
 
   await t.assert.rejects(fastify.ready())
 })
@@ -331,7 +336,10 @@ test('Should throw when @fastify/valkey is initialized with a namespace and an o
 
   fastify.register(fastifyValkey, {
     addresses: [],
-    namespace: 'fail'
+    namespace: 'fail',
+    connectionBackoff: {
+      numberOfRetries: 0
+    }
   })
 
   await t.assert.rejects(fastify.ready())
