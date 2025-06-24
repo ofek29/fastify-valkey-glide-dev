@@ -315,7 +315,7 @@ test('Should be able to register multiple namespaced @fastify/valkey instances',
 test('Should throw when @fastify/valkey is initialized with an option that makes valkey throw', async (t) => {
   t.plan(1)
 
-  const fastify = Fastify({ pluginTimeout: 20000 })
+  const fastify = Fastify()
   t.after(() => fastify.close())
 
   fastify.register(fastifyValkey, {
@@ -331,7 +331,7 @@ test('Should throw when @fastify/valkey is initialized with an option that makes
 test('Should throw when @fastify/valkey is initialized with a namespace and an option that makes valkey throw', async (t) => {
   t.plan(1)
 
-  const fastify = Fastify({ pluginTimeout: 20000 })
+  const fastify = Fastify()
   t.after(() => fastify.close())
 
   fastify.register(fastifyValkey, {
