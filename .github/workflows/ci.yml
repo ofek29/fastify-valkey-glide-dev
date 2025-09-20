@@ -2,8 +2,8 @@ name: CI
 
 on:
   push:
-    branches: 
-    - main
+    branches:
+      - main
     paths-ignore:
       - 'docs/**'
       - '*.md'
@@ -11,17 +11,17 @@ on:
     paths-ignore:
       - 'docs/**'
       - '*.md'
-      
+
 permissions:
   contents: read
-  
+
 jobs:
   linter:
     name: Lint Code
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
 
@@ -31,16 +31,17 @@ jobs:
           node-version: lts/*
           check-latest: true
 
-
       - name: Install dependencies
-        run: npm install
+        run: npm install --ignore-scripts
 
       - name: Run linter
         run: npm run lint
 
   test:
-    name: OS ${{ matrix.os }} Node.js ${{ matrix.node }}
+    name: Test
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
     strategy:
       matrix:
         node: ['20', 'lts/*', 'current']
@@ -61,11 +62,11 @@ jobs:
           brew services start valkey
 
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
 
-      - name: Set up Node.js ${{ matrix.node }}
+      - name: Setup Node.js ${{ matrix.node }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
