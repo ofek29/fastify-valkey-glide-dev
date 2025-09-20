@@ -318,7 +318,7 @@ test('Should throw when @fastify/valkey is initialized with an option that makes
   const fastify = Fastify()
   t.after(() => fastify.close())
 
-  fastify.register(fastifyValkey, { addresses: [] })
+  fastify.register(fastifyValkey, { addresses: [], requestTimeout: 250 })
 
   await t.assert.rejects(fastify.ready())
 })
