@@ -40,6 +40,7 @@ jobs:
   test:
     name: Test
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     permissions:
       contents: read
     strategy:
@@ -60,6 +61,8 @@ jobs:
         run: |
           brew install valkey
           brew services start valkey
+          sleep 2
+          valkey-cli ping
 
       - name: Check out repository
         uses: actions/checkout@v5
